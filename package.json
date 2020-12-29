@@ -1,0 +1,18 @@
+{
+  "name": "cube-follow-path",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel ./index.html --out-dir ./dist",
+    "build": "parcel build ./index.html -d dist --public-url ./"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.124.0"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
