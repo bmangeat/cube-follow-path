@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 
+import Cube from "./Cube"
+
 const perspective = 800
 
 export default class Scene {
@@ -16,6 +18,8 @@ export default class Scene {
 
         this.renderer.setSize(window.innerWidth, window.innerHeight)
         this.renderer.setPixelRatio(window.devicePixelRatio)
+
+        this.cube = new Cube(this.scene)
 
         this.initCamera()
         this.addEvent()
