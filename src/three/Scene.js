@@ -55,6 +55,8 @@ export default class Scene {
         if ( this.renderer === undefined ) return
         requestAnimationFrame( this.update.bind( this ) )
 
+        this.cube.update()
+
         this.renderer.render( this.scene, this.camera )
     }
 }
