@@ -98,14 +98,14 @@ export default class Cube {
     }
 
     destroyMesh( o ) {
-        this.scene.remove(o)
+        this.scene.remove( o )
         o.geometry.dispose()
         o.material.dispose()
-  /*      o.geometry.dispose()
-        o.geometry = undefined
-        o.material.dispose()
-        o.material = undefined
-        this.scene.remove( o.mesh )*/
+        /*      o.geometry.dispose()
+              o.geometry = undefined
+              o.material.dispose()
+              o.material = undefined
+              this.scene.remove( o.mesh )*/
     }
 
     createCubesLeft() {
@@ -113,18 +113,18 @@ export default class Cube {
     }
 
 
-    update(  ) {
+    update() {
         this.t += 0.001
 
 
         this.position = this.curvepath.getPoint( this.t )
-        if (this.mesh !== undefined){
+        if ( this.position.y < 400 ) {
             this.mesh.position.set( this.position.x, this.position.y, this.position.z )
             this.mesh.rotateX( 0.01 )
+
         }
-        console.log(this.mesh)
-        if(this.position.y > 400 && this.mesh !== undefined){
-            this.destroyMesh(this.mesh)
+        else if ( this.mesh !== undefined ) {
+            this.destroyMesh( this.mesh )
             this.mesh = undefined
         }
 
