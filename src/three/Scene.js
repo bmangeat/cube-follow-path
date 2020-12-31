@@ -57,6 +57,7 @@ export default class Scene {
 
         this.cube.update()
 
+
         this.renderer.render( this.scene, this.camera )
     }
 }
