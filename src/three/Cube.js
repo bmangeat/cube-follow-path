@@ -24,13 +24,13 @@ export default class Cube {
     initPath() {
         this.a = this.getRandomA()
         this.b = 0
-        this.c = 0.2
+        this.c = -0.2
 
         let pointsArray = []
 
         if ( Math.random() < 0.5 ) {
 
-            for ( let x = -1.5; x < 0; x += 0.01 ) {
+            for ( let x = -2; x < 0; x += 0.01 ) {
                 let value = this.direction * Math.log( (this.a * Math.pow( x, 2 )) + (this.b * x) + this.c )
                 if ( value * 400 < -600 ) {
 
@@ -42,9 +42,9 @@ export default class Cube {
             }
         } else {
 
-            for ( let x_prime = 1; x_prime > 0; x_prime -= 0.01 ) {
+            for ( let x_prime = 2; x_prime > 0; x_prime -= 0.01 ) {
                 let value_prime = this.direction * Math.log( (this.a * Math.pow( x_prime, 2 )) + (this.b * x_prime) + this.c )
-                if ( value_prime * 400 < -600 ) {
+                if ( value_prime * 400 > 600 ) {
                 } else {
                     let vector = new THREE.Vector3( x_prime * 400, value_prime * 400, 0 )
                     pointsArray.push( vector )
@@ -71,7 +71,7 @@ export default class Cube {
 
 
     getRandomA() {
-        let min = 3
+        let min = 1.5
         let max = 8
         return Math.random() * (max - min) + min
     }
@@ -115,7 +115,7 @@ export default class Cube {
             this.cubes[i].creation += 0.001
             if ( this.direction < 0 ) {
                 if ( position.y < 400 ) {
-                    this.cubes[i].mesh.position.set( position.x, position.y, position.z )
+                    this.cubes[i].mesh.position.set( position.x, position.y,0 )
                     this.cubes[i].mesh.rotateX( this.cubes[i].rotationAngle )
                     this.cubes[i].mesh.rotateY( this.cubes[i].rotationAngle )
 
@@ -124,7 +124,7 @@ export default class Cube {
                 }
             } else {
                 if ( position.y > -400 ) {
-                    this.cubes[i].mesh.position.set( position.x, position.y, position.z )
+                    this.cubes[i].mesh.position.set( position.x, position.y, 0 )
                     this.cubes[i].mesh.rotateX( this.cubes[i].rotationAngle )
                     this.cubes[i].mesh.rotateY( this.cubes[i].rotationAngle )
                 } else if ( this.cubes[i].mesh !== undefined ) {
