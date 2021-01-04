@@ -1,47 +1,30 @@
 import * as THREE from 'three'
 import { Mesh } from 'three'
-import gsap from 'gsap'
-import { Flow } from "three/examples/jsm/modifiers/CurveModifier"
-
 
 export default class Cube {
     constructor( scene ) {
         this.scene = scene
 
         this.t = 0
+        this.i = 0
         this.last = 0
         this.cubesLeft = []
         this.numberCurveDivisions = 200
-
 
         this.start()
     }
 
     start() {
         this.createMesh()
-        this.initLeftParameters()
-        this.initPath()
-
     }
+
 
     initPath() {
-        this.curvepath = new THREE.CatmullRomCurve3( this.pointsArray )
-
-        //this.curvepath.closed = true
-        this.geometry = new THREE.Geometry()
-        this.geometry.vertices = this.curvepath.getPoints( this.numberCurveDivisions )
-        this.material = new THREE.LineBasicMaterial( { color: 0xff0000 } )
-        this.line = new THREE.Line( this.geometry, this.material )
-
-        this.scene.add( this.line )
-    }
-
-    initLeftParameters() {
-        this.a = 2.8
+        this.a = this.getRandomA()
         this.b = 0
         this.c = 0.2
 
-        this.pointsArray = []
+        let pointsArray = []
 
         for ( let x = -1.5; x < 0; x += 0.01 ) {
             let value = -Math.log( (this.a * Math.pow( x, 2 )) + (this.b * x) + this.c )
@@ -49,19 +32,20 @@ export default class Cube {
 
             } else {
                 let vector = new THREE.Vector3( x * 400, value * 400, 0 )
-                this.pointsArray.push( vector )
+                pointsArray.push( vector )
 
             }
         }
 
-        /*    for ( this.x; this.x < 10; this.x += .1 ) {
-                this.a += .01
-                let value = this.a * (Math.pow( this.b, this.x + this.c )) + this.d
+        let curvepath = new THREE.CatmullRomCurve3( pointsArray )
 
-                let vector = new THREE.Vector3( this.x * 100, value * 100, 0 )
-                this.pointsArray.push( vector )
-            }*/
-        console.log( this.pointsArray )
+        let geometry = new THREE.Geometry()
+        geometry.vertices = curvepath.getPoints( this.numberCurveDivisions )
+        let material = new THREE.LineBasicMaterial( { color: 0xff0000 } )
+        let line = new THREE.Line( geometry, material )
+
+        this.scene.add( line )
+        return new THREE.CatmullRomCurve3( pointsArray )
 
     }
 
@@ -81,19 +65,18 @@ export default class Cube {
         this.material = new THREE.MeshBasicMaterial( { color: 0xffffff } )
         this.mesh = new Mesh( this.geometry, this.material )
 
-        this.mesh.position.set( 400, 15, 0 )
-
-        this.scene.add( this.mesh )
-
         let speed = this.getRandomSpeed()
 
         let cube = {
             mesh: this.mesh,
-            path: 'generatePath',
+            path: this.initPath(),
             speed: speed,
-            creationTime: this.t,
-            deleteTime: this.t + ((0.001 * speed) * this.numberCurveDivisions) // 200 correspond to the number of division of the curve
+            creation : 0
+
         }
+
+        this.scene.add( this.mesh )
+
         this.cubesLeft.push( cube )
     }
 
@@ -101,11 +84,6 @@ export default class Cube {
         this.scene.remove( o )
         o.geometry.dispose()
         o.material.dispose()
-        /*      o.geometry.dispose()
-              o.geometry = undefined
-              o.material.dispose()
-              o.material = undefined
-              this.scene.remove( o.mesh )*/
     }
 
     createCubesLeft() {
@@ -116,20 +94,18 @@ export default class Cube {
     update() {
         this.t += 0.001
 
+        if (++this.i % 240 === 0) this.createMesh()
 
-        this.position = this.curvepath.getPoint( this.t )
-        if ( this.position.y < 400 ) {
-            this.mesh.position.set( this.position.x, this.position.y, this.position.z )
-            this.mesh.rotateX( 0.01 )
-
+        for ( let i = 0; i < this.cubesLeft.length; i++ ) {
+            let position = this.cubesLeft[i].path.getPoint( this.cubesLeft[i].creation * this.cubesLeft[i].speed )
+            this.cubesLeft[i].creation += 0.001
+            if ( position.y < 400 ) {
+                this.cubesLeft[i].mesh.position.set( position.x, position.y, position.z )
+                this.cubesLeft[i].mesh.rotateX( 0.01 )
+            } else if ( this.cubesLeft[i].mesh !== undefined ) {
+                this.destroyMesh( this.cubesLeft[i].mesh )
+            }
         }
-        else if ( this.mesh !== undefined ) {
-            this.destroyMesh( this.mesh )
-            this.mesh = undefined
-        }
-
-
-        //console.log( this.x, this.a, this.b, this.c, this.d )
     }
 
 }

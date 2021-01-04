@@ -16,6 +16,10 @@ export default class Scene {
             alpha: true
         })
 
+        this.i = 0
+
+
+
         this.renderer.setSize(window.innerWidth, window.innerHeight)
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
@@ -24,6 +28,7 @@ export default class Scene {
         this.initCamera()
         this.addEvent()
     }
+
 
     initCamera(){
 
@@ -51,11 +56,20 @@ export default class Scene {
         window.addEventListener( "resize", this.onWindowResize.bind( this ), false );
     }
 
+
+    render() {
+
+
+
+    }
+
     update(){
         if ( this.renderer === undefined ) return
         requestAnimationFrame( this.update.bind( this ) )
 
         this.cube.update()
+
+
 
 
         this.renderer.render( this.scene, this.camera )
