@@ -11,6 +11,8 @@ export default class Cube {
         this.cubesLeft = []
         this.numberCurveDivisions = 200
 
+        this.direction = 1
+
         this.start()
     }
 
@@ -27,7 +29,7 @@ export default class Cube {
         let pointsArray = []
 
         for ( let x = -1.5; x < 0; x += 0.01 ) {
-            let value = -Math.log( (this.a * Math.pow( x, 2 )) + (this.b * x) + this.c )
+            let value = this.direction * Math.log( (this.a * Math.pow( x, 2 )) + (this.b * x) + this.c )
             if ( value * 400 < -600 ) {
 
             } else {
@@ -52,6 +54,7 @@ export default class Cube {
     getRandomSpeed() {
         return Math.random() * (1.5 - 0.5) + 0.5
     }
+
 
     getRandomA() {
         let min = 3
@@ -94,18 +97,32 @@ export default class Cube {
     update() {
         this.t += 0.001
 
-        if (++this.i % 240 === 0) this.createMesh()
+        if (++this.i % 120 === 0) this.createMesh()
 
-        for ( let i = 0; i < this.cubesLeft.length; i++ ) {
-            let position = this.cubesLeft[i].path.getPoint( this.cubesLeft[i].creation * this.cubesLeft[i].speed )
-            this.cubesLeft[i].creation += 0.001
-            if ( position.y < 400 ) {
-                this.cubesLeft[i].mesh.position.set( position.x, position.y, position.z )
-                this.cubesLeft[i].mesh.rotateX( 0.01 )
-            } else if ( this.cubesLeft[i].mesh !== undefined ) {
-                this.destroyMesh( this.cubesLeft[i].mesh )
+        if(this.direction < 0){
+            for ( let i = 0; i < this.cubesLeft.length; i++ ) {
+                let position = this.cubesLeft[i].path.getPoint( this.cubesLeft[i].creation * this.cubesLeft[i].speed )
+                this.cubesLeft[i].creation += 0.001
+                if ( position.y < 400 ) {
+                    this.cubesLeft[i].mesh.position.set( position.x, position.y, position.z )
+                    this.cubesLeft[i].mesh.rotateX( 0.01 )
+                } else if ( this.cubesLeft[i].mesh !== undefined ) {
+                    this.destroyMesh( this.cubesLeft[i].mesh )
+                }
+            }
+        } else {
+            for ( let i = 0; i < this.cubesLeft.length; i++ ) {
+                let position = this.cubesLeft[i].path.getPoint( this.cubesLeft[i].creation * this.cubesLeft[i].speed )
+                this.cubesLeft[i].creation += 0.001
+                if ( position.y > -400  ) {
+                    this.cubesLeft[i].mesh.position.set( position.x, position.y, position.z )
+                    this.cubesLeft[i].mesh.rotateX( 0.01 )
+                } else if ( this.cubesLeft[i].mesh !== undefined ) {
+                    this.destroyMesh( this.cubesLeft[i].mesh )
+                }
             }
         }
+
     }
 
 }
