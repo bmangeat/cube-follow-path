@@ -94,6 +94,7 @@ export default class Cube {
         }
 
         this.scene.add( this.mesh )
+        this.mesh.layers.enable(1)
 
         this.cubes.push( cube )
     }
