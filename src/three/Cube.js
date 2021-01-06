@@ -60,6 +60,7 @@ export default class Cube {
         let material = new THREE.LineBasicMaterial( { color: 0xff0000 } )
         let line = new THREE.Line( geometry, material )
 
+
         this.scene.add( line )
         return new THREE.CatmullRomCurve3( pointsArray )
 
@@ -76,10 +77,17 @@ export default class Cube {
         return Math.random() * (max - min) + min
     }
 
+    getRandom(max, min){
+        return Math.random() * (max - min) + min
+    }
+
 
     createMesh() {
         this.geometry = new THREE.BoxGeometry( 100, 100, 100 )
-        this.material = new THREE.MeshBasicMaterial( { color: 0xffffff } )
+        this.material = new THREE.MeshBasicMaterial( {
+            color: 0xffffff,
+
+        } )
         this.mesh = new Mesh( this.geometry, this.material )
 
         let speed = this.getRandomSpeed()
@@ -89,12 +97,15 @@ export default class Cube {
             path: this.initPath(),
             speed: speed,
             creation: 0,
-            rotationAngle: Math.random() < 0.5 ? .01 : - .01
+            rotationAngle: Math.random() < 0.5 ? .01 : -.01
 
         }
 
+        this.mesh.layers.enable( 1 );
+
+
         this.scene.add( this.mesh )
-        this.mesh.layers.enable(1)
+
 
         this.cubes.push( cube )
     }
@@ -116,7 +127,7 @@ export default class Cube {
             this.cubes[i].creation += 0.001
             if ( this.direction < 0 ) {
                 if ( position.y < 400 ) {
-                    this.cubes[i].mesh.position.set( position.x, position.y,0 )
+                    this.cubes[i].mesh.position.set( position.x, position.y, 0 )
                     this.cubes[i].mesh.rotateX( this.cubes[i].rotationAngle )
                     this.cubes[i].mesh.rotateY( this.cubes[i].rotationAngle )
 
