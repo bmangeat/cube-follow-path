@@ -1,15 +1,16 @@
 import * as THREE from 'three'
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass"
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
-import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader"
+
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass"
 
 import Cube from "./Cube"
+import gsap from 'gsap'
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
 import { Color } from "three"
 import Plane from "./Plane"
 
 const perspective = 800
+let isWheeling = false
 
 export default class Scene {
     constructor() {
@@ -32,16 +33,32 @@ export default class Scene {
         this.renderer.setSize( window.innerWidth, window.innerHeight )
         this.renderer.setPixelRatio( window.devicePixelRatio )
 
-        this.plane = new Plane( this.scene, this.container )
-        this.cube = new Cube( this.scene )
+        this.theme = 1
+
+        this.plane = new Plane( this.scene, this.container, this.theme )
+        this.cube = new Cube( this.scene, this.theme )
 
         this.raycaster = new THREE.Raycaster()
         this.mouse = new THREE.Vector2()
+
 
         this.initCamera()
         this.addEvent()
 
         this.initComposer()
+    }
+
+    setTheme( theme ) {
+        while ( this.scene.children.length ) {
+            this.scene.remove( this.scene.children[0] );
+        }
+
+        this.theme = theme
+        this.plane = undefined
+        this.cube = undefined
+
+        this.plane = new Plane( this.scene, this.container, this.theme )
+        this.cube = new Cube( this.scene, this.theme )
     }
 
     initComposer() {
@@ -73,6 +90,16 @@ export default class Scene {
         this.camera.layers.enable( 1 )
     }
 
+    onWheeling() {
+        isWheeling = true;
+        setTimeout( () => {
+                //this.addEvent()
+                isWheeling = false
+
+            }
+            , 5000 );
+    }
+
 
     onWindowResize() {
         const w = window.innerWidth;
@@ -82,6 +109,17 @@ export default class Scene {
         this.camera.updateProjectionMatrix();
 
         this.renderer.setSize( w, h );
+    }
+
+    onScroll( e ) {
+        if ( !isWheeling && e.deltaY > 50 ) {
+            this.onWheeling()
+            if ( this.theme === 0 ) {
+                this.setTheme( 1 )
+            } else {
+                this.setTheme( 0 )
+            }
+        }
     }
 
     onPointerDown( e ) {
@@ -95,16 +133,21 @@ export default class Scene {
 
         if ( intersects.length > 0 ) {
             const object = intersects[0].object
-            let white = new THREE.Color( 1, 1, 1 )
-            console.log( white )
-            //console.log(object.material.color)
-            if ( object.material.color.r === 1 &&
-                object.material.color.g === 1 &&
-                object.material.color.b === 1 ) {
+            if ( (object.material.color.r === 1 && object.material.color.g === 1 && object.material.color.b === 1) ||
+                (object.material.color.r === 0 && object.material.color.g === 0 && object.material.color.b === 0)
+            ) {
 
-                object.material.color = new THREE.Color(1, 0, 0)
+                gsap.to( object.material.color, 1, {
+                    r: 1,
+                    g: 0,
+                    b: 0
+                }, { ease: 'elastic' } )
             } else {
-                object.material.color = new THREE.Color(1, 1, 1)
+                gsap.to( object.material.color, 1, {
+                    r: 1,
+                    g: 1,
+                    b: 1
+                } )
             }
         }
     }
@@ -113,6 +156,7 @@ export default class Scene {
         window.requestAnimationFrame( this.update.bind( this ) )
         window.addEventListener( 'resize', this.onWindowResize.bind( this ), false )
         window.addEventListener( 'pointerdown', this.onPointerDown.bind( this ), false )
+        window.addEventListener( 'mousewheel', this.onScroll.bind( this ), false )
     }
 
 
@@ -122,7 +166,7 @@ export default class Scene {
 
         this.cube.update()
         this.plane.update()
-        //this.renderer.render(this.scene, this.camera)
+
         this.composer.render();
     }
 }

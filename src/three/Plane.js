@@ -25,25 +25,31 @@ const fragmentShader = `
             // gl_FragColor = vec4(color, 1.0);
                        
             vec2 st = gl_FragCoord.xy/u_resolution.xy;
-            float rnd = random(st) + u_theme;
+            float rnd = random(st) - u_theme;
             gl_FragColor = vec4(vec3(rnd),1.0);
         }
         `
-let uniforms = {
-    u_time: { value: 0 },
-    u_resolution: { value: new THREE.Vector2() },
-    u_theme: { value: -.88 }, // .88
-    u_mouse: { value: new THREE.Vector2() }
-}
 
 let time = 0
 
 export default class Plane {
-    constructor( scene, container ) {
+    constructor( scene, container, theme ) {
         this.scene = scene
         this.container = container
 
+        this.setTheme(theme)
+
+        this.uniforms = {
+            u_time: { value: 0 },
+            u_resolution: { value: new THREE.Vector2() },
+            u_theme: { value: this.theme }, // .325
+            u_mouse: { value: new THREE.Vector2() }
+        }
         this.start()
+    }
+
+    setTheme(theme){
+        this.theme = theme === 0 ? .88 : .3
     }
 
     start() {
@@ -54,7 +60,7 @@ export default class Plane {
         this.geometry = new THREE.PlaneBufferGeometry( window.innerWidth * 2, window.innerHeight * 2 )
         this.material = new THREE.ShaderMaterial( {
                 fragmentShader: fragmentShader,
-                uniforms: uniforms
+                uniforms: this.uniforms
             }
         )
         this.mesh = new THREE.Mesh( this.geometry, this.material )
@@ -66,8 +72,8 @@ export default class Plane {
     update() {
 
         time += 0.001
-        uniforms.u_resolution.value.set( this.container.width, this.container.height )
-        uniforms.u_time.value = time
+        this.uniforms.u_resolution.value.set( this.container.width, this.container.height )
+        this.uniforms.u_time.value = time
     }
 
 }

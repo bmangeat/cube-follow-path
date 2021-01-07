@@ -2,22 +2,30 @@ import * as THREE from 'three'
 import { Mesh } from 'three'
 
 export default class Cube {
-    constructor( scene ) {
+    constructor( scene, theme ) {
         this.scene = scene
 
         this.t = 0
         this.i = 0
-        this.last = 0
+
         this.cubes = []
         this.numberCurveDivisions = 200
 
-        this.direction = -1
+        this.setTheme(theme)
 
         this.start()
     }
 
     start() {
         this.createMesh()
+    }
+
+    setTheme(theme){
+        this.cubes.forEach(cube => this.scene.remove(cube))
+        this.theme = theme === 0 ? (-1) : 1
+        this.cubes = []
+
+
     }
 
 
@@ -31,8 +39,8 @@ export default class Cube {
         if ( Math.random() < 0.5 ) {
 
             for ( let x = -2; x < 0; x += 0.01 ) {
-                let value = this.direction * Math.log( (this.a * Math.pow( x, 2 )) + (this.b * x) + this.c )
-                if ( value * 400 < -600 ) {
+                let value = this.theme * Math.log( (this.a * Math.pow( x, 2 )) + (this.b * x) + this.c )
+                if ( value * 400 < -600 || value * 400 > 600 ) {
 
                 } else {
                     let vector = new THREE.Vector3( x * 400, value * 400, 0 )
@@ -43,8 +51,8 @@ export default class Cube {
         } else {
 
             for ( let x_prime = 2; x_prime > 0; x_prime -= 0.01 ) {
-                let value_prime = this.direction * Math.log( (this.a * Math.pow( x_prime, 2 )) + (this.b * x_prime) + this.c )
-                if ( value_prime * 400 > 600 ) {
+                let value_prime = this.theme * Math.log( (this.a * Math.pow( x_prime, 2 )) + (this.b * x_prime) + this.c )
+                if ( value_prime * 400 < -600 || value_prime * 400 > 600 ) {
                 } else {
                     let vector = new THREE.Vector3( x_prime * 400, value_prime * 400, 0 )
                     pointsArray.push( vector )
@@ -61,7 +69,7 @@ export default class Cube {
         let line = new THREE.Line( geometry, material )
 
 
-        this.scene.add( line )
+        //this.scene.add( line )
         return new THREE.CatmullRomCurve3( pointsArray )
 
     }
@@ -77,7 +85,7 @@ export default class Cube {
         return Math.random() * (max - min) + min
     }
 
-    getRandom(max, min){
+    getRandom( max, min ) {
         return Math.random() * (max - min) + min
     }
 
@@ -85,7 +93,7 @@ export default class Cube {
     createMesh() {
         this.geometry = new THREE.BoxGeometry( 100, 100, 100 )
         this.material = new THREE.MeshBasicMaterial( {
-            color: 0xffffff,
+            color: this.theme === -1 ? 0xffffff : 0x000000,
 
         } )
         this.mesh = new Mesh( this.geometry, this.material )
@@ -101,7 +109,7 @@ export default class Cube {
 
         }
 
-        this.mesh.layers.enable( 1 );
+        this.mesh.layers.enable( 1 )
 
 
         this.scene.add( this.mesh )
@@ -125,8 +133,8 @@ export default class Cube {
         for ( let i = 0; i < this.cubes.length; i++ ) {
             let position = this.cubes[i].path.getPoint( this.cubes[i].creation * this.cubes[i].speed )
             this.cubes[i].creation += 0.001
-            if ( this.direction < 0 ) {
-                if ( position.y < 400 ) {
+            if ( this.theme < 0 ) {
+                if ( position.y < 590 ) {
                     this.cubes[i].mesh.position.set( position.x, position.y, 0 )
                     this.cubes[i].mesh.rotateX( this.cubes[i].rotationAngle )
                     this.cubes[i].mesh.rotateY( this.cubes[i].rotationAngle )
@@ -135,7 +143,7 @@ export default class Cube {
                     this.destroyMesh( this.cubes[i].mesh )
                 }
             } else {
-                if ( position.y > -400 ) {
+                if ( position.y > -590 ) {
                     this.cubes[i].mesh.position.set( position.x, position.y, 0 )
                     this.cubes[i].mesh.rotateX( this.cubes[i].rotationAngle )
                     this.cubes[i].mesh.rotateY( this.cubes[i].rotationAngle )
