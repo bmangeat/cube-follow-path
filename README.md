@@ -20,6 +20,13 @@
 
 
 [![LinkedIn][linkedin-shield]][linkedin-url]
+[![Twitter][twitter-shield]][twitter-url]
+[![Github][github-shield]][github-url]
+<br />
+[![GithubLastCommit][last-commit-shield]][last-commit-url]
+
+
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -141,3 +148,9 @@ Project Link: [https://github.com/bmangeat/cube-follow-path](https://github.com/
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/brice-mangeat-web-student/
+[twitter-shield]: https://img.shields.io/twitter/follow/BriceMangeat?color=blue&label=Twitter&logo=Twitter&logoColor=white&style=for-the-badge
+[twitter-url]: https://twitter.com/BriceMangeat
+[github-shield]: https://img.shields.io/github/followers/bmangeat?color=lightgrey&label=Github&logo=github&style=for-the-badge
+[github-url]: https://github.com/bmangeat
+[last-commit-shield]: https://img.shields.io/github/last-commit/bmangeat/cube-follow-path?color=yellow&style=for-the-badge
+[last-commit-url]: https://github.com/bmangeat/cube-follow-path/commits
